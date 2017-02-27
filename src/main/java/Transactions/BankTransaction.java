@@ -1,7 +1,9 @@
 package Transactions;
 
+import java.util.Calendar;
+
 public class BankTransaction {
-	private String dateTime;
+	private String date;
 	private String details;
 	private int amount;
 	private int balance;
@@ -31,15 +33,16 @@ public class BankTransaction {
 		isDeposit = deposit;
 	}
 
-	public BankTransaction(String dateTime, String details, int amount, int bbf){
-		this.dateTime = dateTime;
+	public BankTransaction(String date, String details, int amount, int bbf){
+		details = details.replace("'","");
+		this.date = date;
 		this.details = details;
 		this.amount = amount;
 		this.balance = bbf;
 	}
 	
 	public void printTransaction(){
-		System.out.println("Date of transaction: " + dateTime.toString());
+		System.out.println("Date of transaction: " + date);
 		System.out.println("Details of transaction: " + details);
 		System.out.println("Amount Transferred: " + amount);
 		System.out.println("Balance Brought Forward: " + balance);
@@ -54,12 +57,12 @@ public class BankTransaction {
 		this.balance = balance;
 	}
 
-	public String getDateTime() {
+	public String getDate() {
 
-		return dateTime;
+		return date;
 	}
 
-	public void setDateTime(String dateTime) {
-		this.dateTime = dateTime;
+	public void setDate(String date) {
+		this.date = date;
 	}
 }

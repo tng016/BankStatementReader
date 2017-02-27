@@ -1,6 +1,8 @@
 
 
 import FileIO.FileReaderWriter;
+import JDBC.JDBC;
+import JDBC.queryBuilder;
 import PDFBox.ReadPDF;
 import Transactions.BankTransaction;
 import Transactions.TransactionExtractor;
@@ -43,15 +45,23 @@ public class ApplicationUserInterface {
 
                         TransactionExtractor DBSExtractor = new TransactionExtractor(pdfString); //create extractor object
                         ArrayList<BankTransaction> transactions = DBSExtractor.extract();
+                        JDBC myJDBC = new JDBC("BankStatements","root","MyMacb00k");
                         for (BankTransaction b : transactions){
-                            b.printTransaction();
+                            String s = queryBuilder.createStoreQuery(b);
+                            myJDBC.store(s);
                         }
+                        print("Success!!!");
                     }catch(FileNotFoundException e){
                         print("File not found. Try again");
                     }
 
                     break;
                 case 2:
+
+
+                    break;
+
+                case 3:
                     try{
                         String a = ReadPDF.readPDF("Testing Folders/DBS.pdf");
                         FileReaderWriter.writeFile("DBS.txt",a);

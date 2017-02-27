@@ -2,8 +2,11 @@ package Transactions;
 
 import Regex.RegexChecker;
 import java.io.FileNotFoundException;
+import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Arrays;
+
+import static Misc.CalendarFactory.reformatDateString;
 
 
 public class TransactionExtractor {
@@ -33,7 +36,8 @@ public class TransactionExtractor {
 				transactions.add(BankTransactionFactory.createTransaction(transactionStringArray));
 			}
 		}
-		implementYear();
+		if(!implementYear())
+			return null;
 		implementDepositWithdrawal();
 
 		return transactions;
@@ -49,10 +53,16 @@ public class TransactionExtractor {
 		return startIndexTransactions;
 	}
 
-	private void implementYear(){
+	private boolean implementYear(){
 		for (BankTransaction t : transactions){
-			t.setDateTime(t.getDateTime() + " " + year);
+			try {
+				t.setDate(reformatDateString(t.getDate() + " " + year));
+			} catch (ParseException e) {
+				e.printStackTrace();
+				return false;
+			}
 		}
+		return true;
 	}
 
 	private void implementDepositWithdrawal(){
@@ -75,26 +85,17 @@ public class TransactionExtractor {
 			while (transactions.get(i).getBalance() == 0){
 				amounts.add(transactions.get(i).getAmount());
 				i++;
-				System.out.println("looping" + transactions.get(i).getBalance());
 			}
 			amounts.add(transactions.get(i).getAmount());
-			for (Integer j : amounts){
-				System.out.println(j);
-			}
 			findIsDeposit(amounts,previousBalance,transactions.get(i).getBalance(),i);
 		}
 	}
 
 	private void findIsDeposit(ArrayList<Integer> amountList, int previousBalance, int currentBalance, int pointer){
-		System.out.println(previousBalance);
-		System.out.println(currentBalance);
-		System.out.println(amountList.get(0));
-		System.out.println(amountList.get(1));
 		int numberOfBits = amountList.size();
 		int binaryNumber = (int) (Math.pow(2,numberOfBits+1)-1);
 		int expectedAnswer = currentBalance - previousBalance;
 		String binaryString;
-		System.out.println(expectedAnswer);
 
 		while(true){
 			binaryString = Integer.toBinaryString(binaryNumber);
@@ -107,13 +108,11 @@ public class TransactionExtractor {
 					answer -= amountList.get(i-1);
 				}
 			}
-			System.out.println(answer);
 			if (answer == expectedAnswer){
 				break;
 			}
 			binaryNumber--;
 		}
-		System.out.println("binary String : "+binaryString);
 
 		for (int i=binaryString.length()-1; i>0; i--) {
 			boolean isDeposit = (binaryString.charAt(i)=='0');
