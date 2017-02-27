@@ -5,6 +5,7 @@ import Transactions.BankTransaction;
 
 import java.sql.*;
 import java.text.ParseException;
+import java.util.Scanner;
 
 /**
  * Created by tzeyangng on 27/2/17.
@@ -15,10 +16,9 @@ public class JDBC {
     private String username;
     private String password;
 
-    public JDBC(String dbName, String username, String password){
+    public JDBC(String dbName){
         dbUrl = dbUrl + dbName + suffix;
-        this.username = username;
-        this.password = password;
+        this.authenticate();
     }
 
     public boolean query(String query) {
@@ -57,14 +57,12 @@ public class JDBC {
         return true;
     }
 
-    public static void main (String[] args) throws ParseException {
-        JDBC myJDBC = new JDBC("BankStatements","root","MyMacb00k");
-        BankTransaction t = new BankTransaction("11 Nov 2016", "testing", 1000, 1);
-        String s = queryBuilder.createStoreQuery(t);
-        String newCal = CalendarFactory.reformatDateString("11 Nov 2016");
-        s = s.replace("11 Nov 2016", newCal );
-        myJDBC.store(s);
-        System.out.print(s);
-        System.out.print(newCal);
+    private void authenticate(){
+        Scanner sc = new Scanner(System.in);
+        System.out.println("Please enter your username :");
+        username = sc.next();
+        System.out.println("Please enter your password :");
+        password = sc.next();
     }
+
 }

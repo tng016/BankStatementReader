@@ -45,7 +45,7 @@ public class ApplicationUserInterface {
 
                         TransactionExtractor DBSExtractor = new TransactionExtractor(pdfString); //create extractor object
                         ArrayList<BankTransaction> transactions = DBSExtractor.extract();
-                        JDBC myJDBC = new JDBC("BankStatements","root","MyMacb00k");
+                        JDBC myJDBC = new JDBC("BankStatements");
                         for (BankTransaction b : transactions){
                             String s = queryBuilder.createStoreQuery(b);
                             myJDBC.store(s);
