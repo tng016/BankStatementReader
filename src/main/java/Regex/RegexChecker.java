@@ -38,4 +38,21 @@ public class RegexChecker {
         }
         return null;
     }
+
+    public static String regexExtractorLast(String regex, String str){
+
+        Pattern checkRegex = Pattern.compile(regex);
+
+        Matcher regexMatcher = checkRegex.matcher(str);
+
+        String s = "";
+
+        while (regexMatcher.find()){
+            if (regexMatcher.group().length()!=0) {
+                s = (regexMatcher.group().trim());
+            }
+        }
+        return s;
+    }
+
 }

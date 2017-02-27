@@ -1,0 +1,7 @@
+# Created by .ignore support plugin (hsz.mobi)
+.gitignore
+.idea/workspace.xml
+Statement Archives/
+Testing Folders/
+out/
+src/main/java/Misc/
