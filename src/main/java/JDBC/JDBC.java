@@ -21,24 +21,21 @@ public class JDBC {
         this.authenticate();
     }
 
-    public boolean query(String query) {
+    public ResultSet query(String query) {
+        ResultSet results;
         try {
             Connection myConnection = DriverManager.getConnection(dbUrl, username, password);
 
             Statement myStatement = myConnection.createStatement();
 
-            ResultSet results = myStatement.executeQuery(query);
-
-            while (results.next()){
-                System.out.println(results.getString("title"));
-            }
+            results = myStatement.executeQuery(query);
 
         } catch (Exception e) {
             System.out.print(e.getMessage());
             //e.printStackTrace();
-            return false;
+            return null;
         }
-        return true;
+        return results;
     }
 
     public boolean store(String query) {

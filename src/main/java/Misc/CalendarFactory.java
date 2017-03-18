@@ -16,4 +16,10 @@ public class CalendarFactory {
         return out;
     }
 
+    public static Date generateDate(String s) throws ParseException {
+        SimpleDateFormat sdf2 = new SimpleDateFormat("YYYY-MM-dd");
+        Date date = sdf2.parse(s);
+        return date;
+    }
+
 }

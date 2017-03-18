@@ -2,6 +2,7 @@ package PDFBox;
 
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.io.IOException;
 
 import org.apache.pdfbox.pdmodel.PDDocument;
 import org.apache.pdfbox.text.PDFTextStripper;
@@ -9,11 +10,11 @@ import org.apache.pdfbox.text.PDFTextStripperByArea;
 
 public class ReadPDF {
 
-	public static String readPDF(String fileName) throws FileNotFoundException{
+	public static String readPDF(String filePath) throws IOException {
 		String st = null;
+		PDDocument document = null;
 		try{
-			PDDocument document = null; 
-			document = PDDocument.load(new File(fileName));
+			document = PDDocument.load(new File(filePath));
 			document.getClass();
 			if( !document.isEncrypted() ){
 			    PDFTextStripperByArea stripper = new PDFTextStripperByArea();
@@ -22,11 +23,15 @@ public class ReadPDF {
 			    st = Tstripper.getText(document);
 			}
 		}
-		catch(FileNotFoundException e){
+		catch(IOException e){
 			throw e;
 		}
-		catch(Exception e){
-			e.printStackTrace();
+		finally
+		{
+			if( document != null )
+			{
+				document.close();
+			}
 		}
 		return st;
 	}
