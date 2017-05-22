@@ -1,8 +1,10 @@
 package Transactions;
 
 import Misc.CalendarFactory;
+import Misc.Money;
 
 import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.Date;
 
 /**
@@ -35,6 +37,14 @@ public class DBTransaction {
         this.details = details;
         this.isDeposit = isDeposit;
         this.type = type;
+    }
+
+    public void printTransaction(){
+        System.out.println("Date of transaction: " + date);
+        System.out.println("Details of transaction: " + details);
+        System.out.println("Amount Transferred: " + Money.printMoney(amount));
+        System.out.println("Type: " + type);
+        System.out.println("Is Deposit: " + isDeposit);
     }
 
 
@@ -70,8 +80,8 @@ public class DBTransaction {
         this.details = details;
     }
 
-    public boolean isDeposit() {
-        return isDeposit;
+    public int isDeposit() {
+        return isDeposit?1:0;
     }
 
     public void setDeposit(boolean deposit) {
@@ -84,5 +94,11 @@ public class DBTransaction {
 
     public void setType(int type) {
         this.type = type;
+    }
+
+    public String generateDateString(){
+        SimpleDateFormat sdf2 = new SimpleDateFormat("yyyy-MM-dd");
+        String out = sdf2.format(date);
+        return out;
     }
 }

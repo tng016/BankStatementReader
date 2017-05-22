@@ -4,8 +4,8 @@ import java.util.Calendar;
 
 public class BankTransaction {
 	private String date;
-	private String details;
 	private int amount;
+	private String details;
 	private int balance;
 	private boolean isDeposit;
 

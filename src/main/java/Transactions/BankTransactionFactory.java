@@ -16,7 +16,7 @@ public class BankTransactionFactory {
         int bbf = 0;
         for (int i =0; i<transactionArray.length; i++){
             details = details + transactionArray[i] + " ";
-            if (RegexChecker.regexContains("^\\d?\\d?\\d?,?\\d{1,3}?\\.\\d{2}|Interest Earned d?\\d?\\d?,?\\d{1,3}?\\.\\d{2}",transactionArray[i]))
+            if (RegexChecker.regexContains("^\\d?\\d?\\d?,?\\d{1,3}?\\.\\d{2}|Interest Earned d?\\d?\\d?,?\\d{1,3}?\\.\\d{2}|Advice d?\\d?\\d?,?\\d{1,3}?\\.\\d{2}",transactionArray[i]))
             {
                 String[] amountStr = RegexChecker.regexExtractor("\\d?\\d?\\d?,?\\d{1,3}?\\.\\d{2}( \\d{1,3},\\d{1,3}.\\d{2})?",transactionArray[i]).split(" ");
                 amount = Integer.parseInt(amountStr[0].replace(".","").replace(",",""));

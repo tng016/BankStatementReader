@@ -36,7 +36,8 @@ public class TransactionExtractor {
 			String[] pageStringArray = pageStr.split("\n");
 			ArrayList<Integer> startIndexTransactions = findStartIndicesOfTransactions(pageStringArray);
 			while (startIndexTransactions.size()>=2){
-				String[] transactionStringArray = Arrays.copyOfRange(pageStringArray, startIndexTransactions.remove(0), startIndexTransactions.get(0));
+				String[] transactionStringArray = Arrays.copyOfRange(pageStringArray, startIndexTransactions.remove(0),
+						startIndexTransactions.get(0));
 				transactions.add(BankTransactionFactory.createTransaction(transactionStringArray));
 			}
 		}
@@ -100,9 +101,10 @@ public class TransactionExtractor {
 			isDeposit Algorithm = new isDeposit(amounts,previousBalance,transactions.get(i).getBalance());
 			Algorithm.solve(Algorithm.getAmountList(),Algorithm.getTarget());
 			ArrayList<Integer> withdrawalList = Algorithm.getNegativeList();
-			List<BankTransaction> subList = transactions.subList(i-amounts.size(),i);
+			List<BankTransaction> subList = transactions.subList(i-amounts.size()+1,i+1);
 			for(BankTransaction b :subList){
 				if (withdrawalList.contains(b.getAmount())){
+					//b.setAmount(b.getAmount()*-1);
 					withdrawalList.remove((Integer)b.getAmount());
 				}
 				else{

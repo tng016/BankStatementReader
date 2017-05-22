@@ -13,9 +13,10 @@ public class isDepositTest extends TestCase {
     public void testSolve() throws Exception {
         ArrayList<Integer> realList = new ArrayList<>();
         ArrayList<Integer> absList = new ArrayList<>();
+        //int[] a = {23,-19,17,-13,-11,-7,5,3,-2,1};
         int sum=0;
         for (int i=0;i<10;i++){
-            int random = (int)(Math.random()*200-100);
+            int random = (int)(Math.random()*200 - 100);
             realList.add(random);
             absList.add(Math.abs(random));
             sum += random;

@@ -18,31 +18,41 @@ public class isDeposit {
         prepareTarget(previousBalance,currentBalance);
     }
 
-    public boolean solve(ArrayList<Integer> amountList,int target){
+    public boolean solve(ArrayList<Integer> amountNewList,int target){
 
-        if (amountList.isEmpty()){
-            return false;
-        }
+        ArrayList<Integer> amountNewsList = (ArrayList<Integer>)amountNewList.clone();
 
-        int current = amountList.remove(0);
-
-
-        if (current > target){
-            if (solve(amountList,target)){
+        if (amountNewsList.isEmpty()){
+            if (target == 0){
                 return true;
+            }
+            else{
+                return false;
             }
         }
 
-        else if (current == target){
-            negativeList.add(current);
-            return true;
+        int current = amountNewsList.remove(0);
+
+
+        if (current > target){
+            return (solve(amountNewsList,target));
         }
 
         else {
             negativeList.add(current);
-            return solve(amountList,target-current);
+            if(solve(amountNewsList,target-current)){
+                return true;
+            }
+            else{
+                negativeList.remove(negativeList.size()-1);
+                return(solve(amountNewsList,target));
+            }
         }
-        return false;
+    }
+
+    public boolean solve2(ArrayList<Integer> amountList,int target){
+
+        return true;
     }
 
     public void prepareAmountList(){

@@ -56,7 +56,7 @@ public class JDBC {
 
     private void authenticate(){
         Scanner sc = new Scanner(System.in);
-        System.out.println("Please enter your username :");
+        System.out.println("Please enter your username :");//root
         username = sc.next();
         System.out.println("Please enter your password :");
         password = sc.next();
