@@ -1,5 +1,6 @@
 package Transactions;
 
+import Misc.Money;
 import Regex.RegexChecker;
 
 import java.util.Calendar;
@@ -9,7 +10,7 @@ import java.util.Calendar;
  */
 public class BankTransactionFactory {
     //Array of strings seen on bank statement to object
-    public static BankTransaction createTransaction(String[] transactionArray){
+    public static BankTransaction createTransactionDBS(String[] transactionArray){
         String date = RegexChecker.regexExtractor("[0-9]{2} [A-Za-z]{3}",transactionArray[0]);
         String details = "";
         int amount = 0;
@@ -27,5 +28,12 @@ public class BankTransactionFactory {
         }
         BankTransaction transactionObj = new BankTransaction(date,details,amount,bbf);
         return transactionObj;
+    }
+
+    public static BankTransaction createTransactionDBSC(String transaction) {
+        String date = RegexChecker.regexExtractor("^\\d\\d \\w\\w\\w",transaction);
+        String details = transaction.replaceAll("\\n","").replaceAll("\\t","").replaceAll("'","");
+        int amount = Money.strToInt(RegexChecker.regexExtractorLast("\\d?\\d?\\d?,?\\d?\\d?\\d?\\.\\d\\d",details));
+        return new BankTransaction(date,details,amount);
     }
 }

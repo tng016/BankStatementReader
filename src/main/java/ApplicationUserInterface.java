@@ -2,15 +2,15 @@
 
 import Budget.Budget;
 import FileIO.FileManager;
-import FileIO.FileReaderWriter;
 import JDBC.JDBC;
 import JDBC.queryBuilder;
 import Misc.CalendarFactory;
 import Misc.Money;
 import PDFBox.ReadPDF;
 import Transactions.BankTransaction;
+import Transactions.DBSCreditTransactionExtractor;
 import Transactions.DBTransaction;
-import Transactions.TransactionExtractor;
+import Transactions.DBSTransactionExtractor;
 
 import java.io.File;
 import java.io.IOException;
@@ -67,14 +67,16 @@ public class ApplicationUserInterface {
                 case 4:
                     analyseDate();
                     break;
-
                 case 5:
-                    editEntry();
+                    viewEntry();
                     break;
                 case 6:
-                    deleteEntry();
+                    editEntry();
                     break;
                 case 7:
+                    deleteEntry();
+                    break;
+                case 8:
                     //combineEntry();
                     break;
                 default:
@@ -95,34 +97,55 @@ public class ApplicationUserInterface {
         print("Select (2) : Add types to transactions");
         print("Select (3) : Analyse IO by date and type");
         print("Select (4) : Analyse total IO by date");
-        print("Select (5) : Edit database entry");
-        print("Select (6) : Delete database entry");
-        print("Select (7) : Combine database entry");
+        print("Select (5) : View entries by date");
+        print("Select (6) : Edit database entry");
+        print("Select (7) : Delete database entry");
+        print("Select (8) : Combine database entry");
         print("Select (-1) : Quit Program");
     }
 
-    public static void importBankStatement(){
+    public static void importBankStatement() {
         print("Importing files into DataBase...\n");
-        File[] importFiles = FileManager.getImportFileList();
+        File[][] importFiles = FileManager.getImportFileList();
         ArrayList<BankTransaction> transactionList = new ArrayList<>();
-        for (File f : importFiles){
-            if (!f.getName().contains(".pdf")){
-                continue;
+        for (int i=0;i<importFiles.length;i++){
+            File[] folder = importFiles[i];
+            for (File f : folder) {
+                if (!f.getName().contains(".pdf")) {
+                    continue;
+                }
+                print("Importing file: " + f.getName());
+                String pdfString = null;
+                try {
+                    pdfString = ReadPDF.readPDF(f.getPath());
+                    print("Successfully decoded pdf file...");
+                } catch (IOException e) {
+                    print(e.getMessage());
+                    //e.printStackTrace();
+                }
+
+                switch(i) {
+                    case 0: //DBS
+                        DBSTransactionExtractor DBSExtractor = new DBSTransactionExtractor(pdfString); //create extractor object
+                        transactionList.addAll(DBSExtractor.extract());
+                        print("Successfully extracted transactions...");
+                        FileManager.moveFileToArchive(f, DBSExtractor.getMonth(), DBSExtractor.getYear(), DBSExtractor.getBank());
+                        break;
+                    case 1: //DBS Credit
+                        DBSCreditTransactionExtractor DBSCreditExtractor = new DBSCreditTransactionExtractor(pdfString);
+                        transactionList.addAll(DBSCreditExtractor.extract());
+                        print("Successfully extracted transactions...");
+                        FileManager.moveFileToArchive(f, DBSCreditExtractor.getDate(), DBSCreditExtractor.getBank());
+                        if(myJDBC.store(queryBuilder.deleteCreditQuery(DBSCreditExtractor.getSum()))){
+                            print("Deleted corresponding credit statement");
+                        }
+
+                        break;
+                    case 2: //OCBC
+                        break;
+                }
+                print("Moved File to Archives \n");
             }
-            print("Importing file: " + f.getName());
-            String pdfString = null;
-            try {
-                pdfString = ReadPDF.readPDF(f.getPath());
-                print("Successfully decoded pdf file...");
-            } catch (IOException e) {
-                print(e.getMessage());
-                //e.printStackTrace();
-            }
-            TransactionExtractor DBSExtractor = new TransactionExtractor(pdfString); //create extractor object
-            transactionList.addAll(DBSExtractor.extract());
-            print("Successfully extracted transactions...");
-            FileManager.moveFileToArchive(f,DBSExtractor.getMonth(),DBSExtractor.getYear(),DBSExtractor.getBank());
-            print("Moved File to Archives \n");
         }
 
         print("Storing all transactions to Database...");
@@ -204,6 +227,26 @@ public class ApplicationUserInterface {
         }
     }
 
+    public static void viewEntry(){
+        System.out.println("Enter start date (format YYYY-MM-DD): ");
+        String startDate = scanner.nextLine();
+        System.out.println("Enter end date (format YYYY-MM-DD): ");
+        String endDate = scanner.nextLine();
+        ResultSet results = myJDBC.query(queryBuilder.queryView(startDate,endDate));
+        try {
+            while (results.next()) {
+                print("ID: "+(results.getInt("id")));
+                print("Date: "+(results.getString("date")));
+                print("Amount: "+(results.getBoolean("isDeposit")?"":"-")+Money.printMoney(results.getInt("amount")));
+                print("Details: "+(results.getString("details")));
+                print("Type: "+Budget.type[(results.getInt("type"))]);
+                print("--------------------------------");
+            }
+        }catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
     public static void editEntry(){
         System.out.println("Enter transaction ID: ");
         int tID,userInput = 0;
@@ -251,6 +294,9 @@ public class ApplicationUserInterface {
                         print("Enter the new Type: ");
                         t.setType(scanner.nextInt());
                         break;
+                    case -1:
+                        print("Storing data back into database...");
+                        break;
                     default:
                         print("Error input: " + userInput);
                         break;
@@ -271,7 +317,7 @@ public class ApplicationUserInterface {
         print("Enter transaction ID: ");
         int tID= 0;
         tID = scanner.nextInt();
-        myJDBC.query(queryBuilder.deleteEntryQuery(tID));
+        myJDBC.store(queryBuilder.deleteEntryQuery(tID));
         print("Entry Deleted!");
     }
 

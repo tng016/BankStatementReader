@@ -1,5 +1,6 @@
 package Transactions;
 
+import Budget.Budget;
 import Misc.CalendarFactory;
 import Misc.Money;
 
@@ -43,7 +44,7 @@ public class DBTransaction {
         System.out.println("Date of transaction: " + date);
         System.out.println("Details of transaction: " + details);
         System.out.println("Amount Transferred: " + Money.printMoney(amount));
-        System.out.println("Type: " + type);
+        System.out.println("Type: " + Budget.type[type]);
         System.out.println("Is Deposit: " + isDeposit);
     }
 

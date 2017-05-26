@@ -40,6 +40,14 @@ public class BankTransaction {
 		this.amount = amount;
 		this.balance = bbf;
 	}
+
+	public BankTransaction(String date, String details, int amount){
+		this.date = date;
+		this.details = details;
+		this.amount = amount;
+		this.isDeposit = false;
+		this.balance = 0;
+	}
 	
 	public void printTransaction(){
 		System.out.println("Date of transaction: " + date);

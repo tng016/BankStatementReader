@@ -18,4 +18,10 @@ public class Money {
         }
         return "Error printing value of money!";
     }
+
+    public static int strToInt(String money){
+        money = money.replace(",","");
+        money = money.replace(".","");
+        return Integer.parseInt(money);
+    }
 }

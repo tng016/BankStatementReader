@@ -11,14 +11,14 @@ import java.util.List;
 import static Misc.CalendarFactory.reformatDateString;
 
 
-public class TransactionExtractor {
+public class DBSTransactionExtractor {
 	private String[] pages;
 	private String month;
 	private String year;
 	private int balanceBroughtForward;
 	private ArrayList<BankTransaction> transactions;
 
-	public TransactionExtractor(String pdfString){
+	public DBSTransactionExtractor(String pdfString){
 		pages = pdfString.split("Page \\d+ of \\d+");
 		String tempString = RegexChecker.regexExtractor("As at [0-9]{2} [A-Za-z]{3} [0-9]{4}",pdfString);
 		month = tempString.split(" ")[3];
@@ -38,7 +38,7 @@ public class TransactionExtractor {
 			while (startIndexTransactions.size()>=2){
 				String[] transactionStringArray = Arrays.copyOfRange(pageStringArray, startIndexTransactions.remove(0),
 						startIndexTransactions.get(0));
-				transactions.add(BankTransactionFactory.createTransaction(transactionStringArray));
+				transactions.add(BankTransactionFactory.createTransactionDBS(transactionStringArray));
 			}
 		}
 
@@ -154,11 +154,6 @@ public class TransactionExtractor {
 	}
 
 	public String getBank(){
-		for (String p: pages){
-			if (p.contains("DBS Bank Ltd ")){
-				return "DBS";
-			}
-		}
-		return null;
+		return "DBS";
 	}
 }
