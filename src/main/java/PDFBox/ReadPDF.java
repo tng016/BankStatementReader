@@ -16,7 +16,8 @@ public class ReadPDF {
 		try{
 			document = PDDocument.load(new File(filePath));
 			document.getClass();
-			if( !document.isEncrypted() ){
+			//if( !document.isEncrypted() ){
+			if( true ){
 			    PDFTextStripperByArea stripper = new PDFTextStripperByArea();
 			    stripper.setSortByPosition( true );
 			    PDFTextStripper Tstripper = new PDFTextStripper();

@@ -36,4 +36,12 @@ public class BankTransactionFactory {
         int amount = Money.strToInt(RegexChecker.regexExtractorLast("\\d?\\d?\\d?,?\\d?\\d?\\d?\\.\\d\\d",details));
         return new BankTransaction(date,details,amount);
     }
+
+    public static BankTransaction createTransactionOCBC(String transaction,String month) {
+        String date = RegexChecker.regexExtractor("\\d{1,2} "+month,transaction);
+        String details = transaction.replaceAll("\\n","").replaceAll("\\t","").replaceAll("'","");
+        int amount = Money.strToInt(RegexChecker.regexExtractor("\\d?\\d?\\d?,?\\d?\\d?\\d?\\.\\d\\d",details));
+        int balance = Money.strToInt(RegexChecker.regexExtractorLast("\\d?\\d?\\d?,?\\d?\\d?\\d?\\.\\d\\d",details));
+        return new BankTransaction(date,details,amount,balance);
+    }
 }

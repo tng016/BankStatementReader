@@ -7,10 +7,7 @@ import JDBC.queryBuilder;
 import Misc.CalendarFactory;
 import Misc.Money;
 import PDFBox.ReadPDF;
-import Transactions.BankTransaction;
-import Transactions.DBSCreditTransactionExtractor;
-import Transactions.DBTransaction;
-import Transactions.DBSTransactionExtractor;
+import Transactions.*;
 
 import java.io.File;
 import java.io.IOException;
@@ -139,9 +136,12 @@ public class ApplicationUserInterface {
                         if(myJDBC.store(queryBuilder.deleteCreditQuery(DBSCreditExtractor.getSum()))){
                             print("Deleted corresponding credit statement");
                         }
-
                         break;
                     case 2: //OCBC
+                        OCBCTransactionExtractor OCBCExtractor = new OCBCTransactionExtractor(pdfString);
+                        transactionList.addAll(OCBCExtractor.extract());
+                        print("Successfully extracted transactions...");
+                        FileManager.moveFileToArchive(f, OCBCExtractor.getMonth(), OCBCExtractor.getYear(), OCBCExtractor.getBank());
                         break;
                 }
                 print("Moved File to Archives \n");
